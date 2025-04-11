@@ -62,7 +62,7 @@ class AppLogger:
                 fileHandler = TimedRotatingFileHandler(
                     file_path,
                     when=LOGGING_WHEN,
-                    interval=LOGGING_INTERVAL,
+                    interval=int(LOGGING_INTERVAL),
                 )
                 fileHandler.suffix = "%Y%m%d_%H%M%S.log"
                 fileHandler.setFormatter(logFormatter)
@@ -73,6 +73,19 @@ class AppLogger:
                 consoleHandler = logging.StreamHandler()
                 consoleHandler.setFormatter(logFormatter)
                 self.logger.addHandler(consoleHandler)
+
+        # Configure logging level for Azure SDK loggers to suppress excessive output
+        azure_loggers = [
+            "azure",
+            "azure.core.pipeline.policies.http_logging_policy",
+            "azure.identity",
+            "azure.keyvault",
+        ]
+
+        for azure_logger_name in azure_loggers:
+            azure_logger = logging.getLogger(azure_logger_name)
+            azure_logger.setLevel(logging.WARNING)  # Reduce verbosity to warnings and errors only
+            azure_logger.propagate = False
 
     def _config_handlers(self):
         # Create list of handlers
