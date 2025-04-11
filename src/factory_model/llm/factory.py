@@ -34,7 +34,6 @@ class ModelFactory:
 
     @staticmethod
     def get_model(alias: str) -> BaseModel:
-
         cached = cache.get(alias)
         if cached is not None:
             return cached
@@ -51,3 +50,28 @@ class ModelFactory:
                 return model
         except Exception as e:
             error(f"Error in ModelFactory.create {e}")
+
+
+    @staticmethod
+    def create_model(alias: str, model_def: dict) -> BaseModel:
+        """
+        Creates a model instance using the provided configuration dictionary.
+        
+        This method does not use the cache to retrieve an existing model, 
+        but it updates the cache with the newly created and initialized model.
+
+        Args:
+            alias: Alias for the model.
+            model_def: Dictionary with model configuration.
+
+        Returns:
+            An initialized instance of the model.
+        """
+        try:
+            model_class = ModelFactory.MODEL_CLASSES.get(model_def.get("connection_type"))
+            model: BaseModel = model_class(model_def)
+            model.initialize_model(alias)
+            cache[alias] = model
+            return model
+        except Exception as e:
+            error(f"Error in ModelFactory.create_model {e}")
