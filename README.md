@@ -19,7 +19,6 @@ Esta librería está diseñada para facilitar la interacción con LLMs de OpenAI
   - `logger`
   - `security`
   - `auth_clients`
-  - `utils`
   - `model_*` (interfaces para distintos LLMs)
 
 ## Instalación
@@ -33,40 +32,72 @@ pip install llm
 Desde un repositorio:
 
 ```bash
-pip install git+https://github.com/tu_usuario/mi_libreria.git
+pip install git+https://github.com/jprofile/model_factory.git
 ```
 
 Instalación local (modo editable para desarrollo):
 
 ```bash
-git clone https://github.com/tu_usuario/mi_libreria.git
+git clone https://github.com/jprofile/model_factory.git
 cd llm
 pip install -e .
 ```
 
+## Puesta a punto
+Para poder hacer uso de la factoría de modelos es necesario definir una serie de variables de entorno, que permiten la conexión a los distintos servicios de alojamiento de modelos:
+
+```python
+AZURE_TENANT_ID = <id_tenant_azure>
+AZURE_CLIENT_ID = <id_client_azure>
+AZURE_CLIENT_SECRET = <secret_passphrase_azure_client>
+AZURE_TOKEN_URL = <azure_url_token_generator>
+```
+
+Para un mayor nivel de seguridad, se cuenta con conexión a KeyVault. Para definir la conexión al almacén de claves correspondiente, se debe usar:
+```python
+KV_NAME = <kv_name>
+KV_TENANT_ID = <id_kv_tenant>
+KV_CLIENT_ID = <id_kv_client>
+KV_SECRET = <secret_passphrase_kv>
+```
+
+Con la conexión a KeyVault establecida, los valores que se deben recuperar desde el almacén de claves deben especificarse siguiendo la siguiente nomenclatura:
+> VARIABLE_SECRET = kv{name-of-secret-at-kv}
+
+De esta forma, por ejemplo:
+```python
+# Pasamos de tener el secreto en raw
+AZURE_CLIENT_SECRET = <secret_passphrase_azure_client>
+
+# A recuperarlo desde el KV
+AZURE_CLIENT_SECRET = kv{<name_secret_azure_client>}
+```
+
+Además, si contamos con un fichero en el que tenemos las distintas configuraciones de modelos que deseamos utilizar, debemos indicarlo con su correspondiente variable.
+> MODELS_CONFIG_FILE = <path_to_models_declarations_file>
+
 ## Uso básico
 
 ```python
-from model_factory.model_OpenAIChat import OpenAIChatModel
+from factory_model import ModelFactory
 
-modelo = OpenAIChatModel()
-respuesta = modelo.chat("¿Cuál es la capital de Francia?")
+model = ModelFactory.get_model('gpt-4o')
+respuesta = modelo.invoke("¿Cuál es la capital de Francia?")
 print(respuesta)
 ```
-
-> ⚠️ Sustituye `model_factory` por el nombre del submódulo real si cambia.
 
 ## Estructura del proyecto
 
 ```
-mi_libreria/
-├── model_factory/
+factory_model/
+├── factory_model/
 │   ├── __init__.py
-│   ├── logger.py
-│   ├── utils.py
-│   ├── security.py
-│   ├── ...
+│   ├── config/
+│   ├── llm/
+│   ├── logger/
+│   ├── security/
 ├── pyproject.toml
+├── requirements.txt
 └── README.md
 ```
 
@@ -78,7 +109,9 @@ Este paquete requiere las siguientes librerías externas:
 - `PyYAML`
 - `openai`
 - `jinja2`
+- `azure-core`
 - `azure-identity`
+- `azure-keyvault-secrets`
 - `langchain`
 - `langchain-openai`
 - `langchain-google-genai`

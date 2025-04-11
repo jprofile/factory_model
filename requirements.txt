@@ -1,6 +1,7 @@
 openai==1.72.0
 azure-core==1.33.0
 azure-identity==1.21.0
+azure-keyvault-secrets==4.9.0
 langchain==0.3.23
 langchain_openai==0.3.12
 langchain_azure_ai==0.1.2
