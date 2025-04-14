@@ -13,13 +13,6 @@ REGEX_VAR = r"{(.+?)}"
 class BaseModel(ABC):
     def __init__(self, config: dict[str, str]):
         self.config = config
-        # import os
-        # self.model_name = config.get("model_name").format(**os.environ)
-        # self.version = config.get("model_version").format(**os.environ)
-        # self.api_key = config.get("api_key").format(**os.environ)
-        # self.api_auth = config.get("api_auth").format(**os.environ)
-        # self.endpoint = config.get("api_endpoint").format(**os.environ)
-        # self.params = config.get("model_params", {})
 
         self.model_name = self.render_var("model_name")
         self.version = self.render_var("model_version")
@@ -29,6 +22,13 @@ class BaseModel(ABC):
             self.endpoint = self.render_var("api_endpoint")
         self.api_auth = self.render_var("api_auth", default="service_principal")
         self.params = self.render_var("model_params", default={})
+
+        self.client = None
+
+
+    def get_client(self):
+        return self.client
+
 
     @abstractmethod
     def initialize_model(self):
