@@ -54,7 +54,7 @@ class AppLogger:
 
             # Add file handler if it is configured
             if "file_handler" in self.log_handlers:
-                self.log_dir = LOGGING_DIR
+                self.log_dir = self._resolve_log_dir(LOGGING_DIR)
                 self.log_file = LOGGING_FILE
 
                 Path(self.log_dir).mkdir(parents=True, exist_ok=True)
@@ -93,6 +93,17 @@ class AppLogger:
         self.log_handlers = [
             r.strip().lower() for r in _handlers.strip().split(",")
         ] if len(_handlers) > 0 else []
+
+    def _resolve_log_dir(self, path_str):
+        log_dir = Path(path_str)
+        try:
+            log_dir.mkdir(parents=True, exist_ok=True)
+        except PermissionError:
+            fallback_dir = Path("/tmp/app_logs")
+            fallback_dir.mkdir(parents=True, exist_ok=True)
+            print(f"[AppLogger] No se puede usar '{log_dir}', usando fallback '{fallback_dir}'")
+            return str(fallback_dir)
+        return str(log_dir)
 
     def debug(self, message):
         self.logger.debug(message)
