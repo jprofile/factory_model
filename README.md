@@ -1,6 +1,6 @@
-# LLM
+# Model Factory
 
-**LLM** es una librería Python modular orientada a la integración con múltiples modelos de lenguaje (LLMs), proveedores cloud y utilidades auxiliares para desarrollo e infraestructura.
+**Model Factory** es una librería Python modular orientada a la integración con múltiples modelos de lenguaje (LLMs), proveedores cloud y utilidades auxiliares para desarrollo e infraestructura.
 
 Esta librería está diseñada para facilitar la interacción con LLMs de OpenAI, Azure, Google y Ollama, integrando además autenticación, configuración externa, plantillas Jinja2, y componentes reutilizables.
 
@@ -62,7 +62,9 @@ KV_SECRET = <secret_passphrase_kv>
 ```
 
 Con la conexión a KeyVault establecida, los valores que se deben recuperar desde el almacén de claves deben especificarse siguiendo la siguiente nomenclatura:
-> VARIABLE_SECRET = kv{name-of-secret-at-kv}
+```
+VARIABLE_SECRET = kv{name-of-secret-at-kv}
+```
 
 De esta forma, por ejemplo:
 ```python
@@ -74,7 +76,9 @@ AZURE_CLIENT_SECRET = kv{<name_secret_azure_client>}
 ```
 
 Además, si contamos con un fichero en el que tenemos las distintas configuraciones de modelos que deseamos utilizar, debemos indicarlo con su correspondiente variable.
-> MODELS_CONFIG_FILE = <path_to_models_declarations_file>
+```
+MODELS_CONFIG_FILE = <path_to_models_declarations_file>
+```
 
 ## Uso básico
 

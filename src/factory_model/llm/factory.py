@@ -34,6 +34,19 @@ class ModelFactory:
 
     @staticmethod
     def get_model(alias: str) -> BaseModel:
+        """
+        Creates a model instance using the provided configuration dictionary.
+        
+        This method uses the cache to retrieve an existing model.
+        If the model doesnt exist yet, it create it from models configuration file.
+
+        Args:
+            alias: Alias for the model.
+            model_def: Dictionary with model configuration.
+
+        Returns:
+            An initialized instance of the model.
+        """
         cached = cache.get(alias)
         if cached is not None:
             return cached
