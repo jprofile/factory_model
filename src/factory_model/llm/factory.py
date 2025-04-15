@@ -1,4 +1,4 @@
-from ..logger import error
+from ..logger import error, info
 from ..config import MODELS_CONFIG_FILE
 
 # Models
@@ -47,6 +47,7 @@ class ModelFactory:
                 model: BaseModel = model_class(model_def)
                 model.initialize_model(alias)
                 cache[alias] = model
+                info(f"Model {alias} created")
                 return model
         except Exception as e:
             error(f"Error in ModelFactory.create {e}")
@@ -72,6 +73,7 @@ class ModelFactory:
             model: BaseModel = model_class(model_def)
             model.initialize_model(alias)
             cache[alias] = model
+            info(f"Model {alias} created")
             return model
         except Exception as e:
             error(f"Error in ModelFactory.create_model {e}")
